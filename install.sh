@@ -92,9 +92,9 @@ check_requirements() {
     log_error "Faltan dependencias necesarias."
     echo ""
     log_info "En Ubuntu/Debian, instala con:"
-    echo "  ${CYAN}sudo apt update && sudo apt install -y docker.io docker-compose-plugin git curl${NC}"
-    echo "  ${CYAN}sudo usermod -aG docker \$USER${NC}"
-    echo "  ${CYAN}newgrp docker${NC}"
+    echo -e "  ${CYAN}sudo apt update && sudo apt install -y docker.io docker-compose-plugin git curl${NC}"
+    echo -e "  ${CYAN}sudo usermod -aG docker \$USER${NC}"
+    echo -e "  ${CYAN}newgrp docker${NC}"
     echo ""
     exit 1
   fi
@@ -320,8 +320,8 @@ deployment_menu() {
       ;;
     4)
       log_info "Instalación preparada. Puedes desplegar más tarde con:"
-      echo "  ${CYAN}cd $INSTALL_DIR${NC}"
-      echo "  ${CYAN}bash scripts/init.sh${NC}"
+      echo -e "  ${CYAN}cd $INSTALL_DIR${NC}"
+      echo -e "  ${CYAN}bash scripts/init.sh${NC}"
       echo ""
       exit 0
       ;;
@@ -407,17 +407,17 @@ show_final_summary() {
   echo ""
   
   log_info "Servicios disponibles:"
-  echo "  → Nextcloud:    ${CYAN}http://localhost:8080${NC}"
-  echo "  → Uptime Kuma:  ${CYAN}http://localhost:3001${NC}"
+  echo -e "  → Nextcloud:    ${CYAN}http://localhost:8080${NC}"
+  echo -e "  → Uptime Kuma:  ${CYAN}http://localhost:3001${NC}"
   echo ""
   
   log_info "Comandos útiles:"
-  echo "  ${CYAN}cd $INSTALL_DIR${NC}"
-  echo "  ${CYAN}docker compose ps${NC}                    # Ver estado"
-  echo "  ${CYAN}docker compose logs -f app${NC}           # Ver logs"
-  echo "  ${CYAN}docker compose down${NC}                  # Detener"
-  echo "  ${CYAN}bash scripts/backup.sh${NC}               # Backup"
-  echo "  ${CYAN}bash scripts/evidencias.sh${NC}           # Evidencias"
+  echo -e "  ${CYAN}cd $INSTALL_DIR${NC}"
+  echo -e "  ${CYAN}docker compose ps${NC}                    # Ver estado"
+  echo -e "  ${CYAN}docker compose logs -f app${NC}           # Ver logs"
+  echo -e "  ${CYAN}docker compose down${NC}                  # Detener"
+  echo -e "  ${CYAN}bash scripts/backup.sh${NC}               # Backup"
+  echo -e "  ${CYAN}bash scripts/evidencias.sh${NC}           # Evidencias"
   echo ""
   
   log_success "¡Disfruta de tu intranet escolar con Nextcloud!"
