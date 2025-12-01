@@ -294,9 +294,22 @@ Credenciales creadas automáticamente para demostración:
 
 **Configuración recomendada de monitor**:
 - **Tipo**: HTTP(s)
-- **URL**: `http://app/status.php` (usando nombre de servicio Docker)
-- **Intervalo**: 60 segundos
-- **Nombre**: Nextcloud Intranet
+- **Friendly Name**: Nextcloud
+- **URL**: `http://app/status.php` (⚠️ **importante**: usar nombre de servicio Docker, NO localhost:8080)
+- **Heartbeat Interval**: 20 segundos
+- **Retries**: 2
+- **Request Timeout**: 8 segundos
+- **Accepted Status Codes**: 200-299
+- **Method**: GET
+- **Body**: (vacío, sin JSON)
+
+**✅ Resultado esperado**: Monitor en estado UP con código 200 - OK
+
+**⚠️ Notas importantes**:
+- El dominio `app` ya está configurado automáticamente en `trusted_domains` de Nextcloud
+- NO usar `http://localhost:8080/status.php` (causaría error 400)
+- NO añadir cuerpo JSON a la petición HTTP
+- El script `scripts/setup_kuma.sh` verifica la configuración correcta
 
 ### 7.3. Base de Datos MariaDB
 
@@ -426,7 +439,28 @@ bash scripts/restore.sh backups/20251201_143022
 
 **Precaución**: Sobrescribe datos actuales. Usar solo cuando sea necesario.
 
-### 8.7. evidencias.sh - Generación de Evidencias
+### 8.7. setup_kuma.sh - Configuración de Uptime Kuma
+
+Verifica y valida la configuración de Uptime Kuma:
+
+```bash
+bash scripts/setup_kuma.sh
+```
+
+**Funcionalidades**:
+- Espera a que Uptime Kuma esté accesible (max 120s)
+- Verifica el estado de configuración inicial
+- Valida que el endpoint `http://app/status.php` responde correctamente (200 OK)
+- Detecta errores comunes (400 Trusted domain, 503 Mantenimiento)
+- Muestra instrucciones detalladas para configurar el monitor manualmente
+- Verifica conectividad de red entre contenedores
+
+**Diagnóstico de problemas**:
+- Error 400 → Trusted domain no configurado → ejecutar `cole_setup.sh`
+- Error 503 → Modo mantenimiento → `docker compose exec -u www-data app php occ maintenance:mode --off`
+- Error 000 → Problema de red entre contenedores → verificar docker compose
+
+### 8.8. evidencias.sh - Generación de Evidencias
 
 Genera evidencias técnicas para la memoria del proyecto:
 
