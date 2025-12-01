@@ -1,0 +1,28 @@
++-----------+------------------------+--------+-----------+------+----------------------+-----------------------------+
+| Folder Id | Name                   | Groups | Quota     | Size | Advanced Permissions | Manage advanced permissions |
++-----------+------------------------+--------+-----------+------+----------------------+-----------------------------+
+| 1         | Claustro - Profesorado |        | Unlimited | 0 B  | Disabled             |                             |
+| 2         | Secretaría             |        | Unlimited | 0 B  | Disabled             |                             |
+| 3         | Dirección              |        | Unlimited | 0 B  | Disabled             |                             |
+| 4         | Comunicados Alumnado   |        | Unlimited | 0 B  | Disabled             |                             |
+| 5         | Curso 1ESO - Material  |        | Unlimited | 0 B  | Disabled             |                             |
+| 6         | Curso 2ESO - Material  |        | Unlimited | 0 B  | Disabled             |                             |
+| 7         | Curso 3ESO - Material  |        | Unlimited | 0 B  | Disabled             |                             |
+| 8         | Curso 4ESO - Material  |        | Unlimited | 0 B  | Disabled             |                             |
+| 9         | Curso 1BACH - Material |        | Unlimited | 0 B  | Disabled             |                             |
+| 10        | Curso 2BACH - Material |        | Unlimited | 0 B  | Disabled             |                             |
+| 11        | Curso FP1 - Material   |        | Unlimited | 0 B  | Disabled             |                             |
+| 12        | Curso FP2 - Material   |        | Unlimited | 0 B  | Disabled             |                             |
+| 13        | Claustro - Profesorado |        | Unlimited | 0 B  | Disabled             |                             |
+| 14        | Secretaría             |        | Unlimited | 0 B  | Disabled             |                             |
+| 15        | Dirección              |        | Unlimited | 0 B  | Disabled             |                             |
+| 16        | Comunicados Alumnado   |        | Unlimited | 0 B  | Disabled             |                             |
+| 17        | Curso 1ESO - Material  |        | Unlimited | 0 B  | Disabled             |                             |
+| 18        | Curso 2ESO - Material  |        | Unlimited | 0 B  | Disabled             |                             |
+| 19        | Curso 3ESO - Material  |        | Unlimited | 0 B  | Disabled             |                             |
+| 20        | Curso 4ESO - Material  |        | Unlimited | 0 B  | Disabled             |                             |
+| 21        | Curso 1BACH - Material |        | Unlimited | 0 B  | Disabled             |                             |
+| 22        | Curso 2BACH - Material |        | Unlimited | 0 B  | Disabled             |                             |
+| 23        | Curso FP1 - Material   |        | Unlimited | 0 B  | Disabled             |                             |
+| 24        | Curso FP2 - Material   |        | Unlimited | 0 B  | Disabled             |                             |
++-----------+------------------------+--------+-----------+------+----------------------+-----------------------------+

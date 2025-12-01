@@ -94,9 +94,96 @@ newgrp docker
 
 ## 3. Despliegue Rápido
 
-### 3.1. Instalación Remota (Recomendado)
+### Instalación Automática (Un Solo Comando)
 
-Instalación automatizada desde GitHub con un solo comando:
+Clona el repositorio y ejecuta el instalador:
+
+```bash
+git clone https://github.com/JohnFredydev/Intranet-Escolar-con-Nextcloud.git
+cd Intranet-Escolar-con-Nextcloud
+bash install.sh
+```
+
+El instalador ejecutará **automáticamente**:
+
+1. ✓ Verificación de requisitos (Docker, Docker Compose, Git, Curl)
+2. ✓ Creación de `.env` desde plantilla (si no existe)
+3. ✓ Levantado de servicios Docker (Nextcloud, MariaDB, Uptime Kuma)
+4. ✓ Espera hasta que la base de datos esté healthy
+5. ✓ Configuración del entorno educativo:
+   - Trusted domains (`localhost`, `app`)
+   - Instalación de apps (groupfolders, impersonate, etc.)
+   - Creación de grupos (profesorado, alumnado, cursos...)
+   - Creación de carpetas grupales con permisos
+   - Configuración de theming
+6. ✓ Creación de usuarios de demostración:
+   - `admin` (administrador)
+   - `profe` (profesor - 5GB)
+   - `alumno1`, `alumno2` (alumnos - 1GB)
+7. ✓ Generación de evidencias técnicas
+
+**Tiempo estimado**: 3-5 minutos en la primera ejecución.
+
+### Verificación Post-Instalación
+
+Una vez completada la instalación, verifica que todo funciona:
+
+```bash
+# Ver estado de contenedores (todos deben estar "Up" y db "healthy")
+docker compose ps
+
+# Verificar instalación de Nextcloud
+docker compose exec -T -u www-data app php occ status
+
+# Verificar trusted domains (debe mostrar localhost y app)
+docker compose exec -T -u www-data app php occ config:system:get trusted_domains
+
+# Verificar usuarios creados
+docker compose exec -T -u www-data app php occ user:list
+
+# Verificar acceso desde Uptime Kuma (debe devolver 200)
+docker compose exec kuma curl -s -o /dev/null -w "%{http_code}" http://app/status.php
+```
+
+### Acceso a los Servicios
+
+Una vez desplegado, accede a:
+
+- **Nextcloud**: http://localhost:8080
+- **Uptime Kuma**: http://localhost:3001
+
+### Credenciales de Acceso
+
+| Usuario | Contraseña | Rol | Cuota |
+|---------|-----------|-----|-------|
+| admin | (ver .env) | Administrador | Sin límite |
+| profe | Profe123! | Profesor | 5 GB |
+| alumno1 | Alumno123! | Alumno | 1 GB |
+| alumno2 | Alumno123! | Alumno | 1 GB |
+
+**Nota**: La contraseña del administrador se encuentra en el archivo `.env` (variable `NEXTCLOUD_ADMIN_PASSWORD`).
+
+### Configurar Uptime Kuma (Manual - Una Sola Vez)
+
+Uptime Kuma requiere configuración manual del primer usuario y monitor:
+
+1. Abre http://localhost:3001
+2. Crea el usuario administrador
+3. Añade un monitor con:
+   - **URL**: `http://app/status.php` (importante: usar `app`, no `localhost`)
+   - **Tipo**: HTTP(s)
+   - **Intervalo**: 20 segundos
+
+Ver [docs/UPTIME_KUMA_CONFIG.md](docs/UPTIME_KUMA_CONFIG.md) para detalles completos.
+
+### Reinstalación / Ejecución Idempotente
+
+El script `install.sh` es **idempotente**: puedes ejecutarlo múltiples veces de forma segura.
+
+- Si `.env` ya existe, no se sobrescribe
+- Si los contenedores ya están corriendo, no se duplican
+- Si los grupos/usuarios ya existen, no se recrean
+- Si las carpetas grupales ya existen, se reutilizan
 
 ```bash
 bash <(curl -fsSL "https://raw.githubusercontent.com/JohnFredydev/Intranet-Escolar-con-Nextcloud/main/install.sh")
@@ -303,9 +390,9 @@ Credenciales creadas automáticamente para demostración:
 - **Method**: GET
 - **Body**: (vacío, sin JSON)
 
-**✅ Resultado esperado**: Monitor en estado UP con código 200 - OK
+**Resultado esperado**: Monitor en estado UP con código 200 - OK
 
-**⚠️ Notas importantes**:
+**Notas importantes**:
 - El dominio `app` ya está configurado automáticamente en `trusted_domains` de Nextcloud
 - NO usar `http://localhost:8080/status.php` (causaría error 400)
 - NO añadir cuerpo JSON a la petición HTTP
@@ -331,28 +418,46 @@ docker compose exec db mysql -u root -p
 
 ## 8. Scripts Disponibles
 
-### 8.1. init.sh - Inicialización Completa
+### 8.1. install.sh - Instalador Principal
 
-Script maestro que orquesta todo el despliegue:
+**Script de entrada único** que despliega todo el entorno automáticamente:
 
 ```bash
-bash scripts/init.sh
+bash install.sh
 ```
 
 **Funciones**:
-1. Verifica estructura del proyecto
-2. Crea `.env` si no existe
-3. Levanta servicios Docker Compose
-4. Espera a que la base de datos esté healthy (max 180s)
-5. Verifica que Nextcloud esté instalado (max 240s)
-6. Ejecuta `cole_setup.sh`
-7. Ejecuta `alta_colegio_basica.sh`
-8. Ejecuta `evidencias.sh`
-9. Muestra resumen con URLs y credenciales
+1. Verifica requisitos del sistema (Docker, Docker Compose, Git, Curl)
+2. Verifica estructura del proyecto
+3. Crea `.env` desde `.env.example` si no existe
+4. Levanta servicios Docker Compose con healthcheck
+5. Espera a que MariaDB esté healthy (max 120s)
+6. Espera a que Nextcloud responda (max 60s)
+7. Llama a `scripts/init.sh --auto` para configuración completa
+8. Muestra resumen final con URLs y comandos útiles
 
-**Idempotencia**: Puede ejecutarse múltiples veces sin causar problemas.
+**Idempotencia**: Puede ejecutarse múltiples veces sin problemas. No sobrescribe `.env` existente ni duplica recursos.
 
-### 8.2. cole_setup.sh - Configuración Educativa
+**Tiempo estimado**: 3-5 minutos en primera ejecución.
+
+### 8.2. scripts/init.sh - Orquestador de Configuración
+
+Script secundario llamado por `install.sh` que coordina la configuración:
+
+```bash
+bash scripts/init.sh --auto  # Modo automático (usado por install.sh)
+bash scripts/init.sh          # Modo interactivo (uso manual)
+```
+
+**Funciones** (en modo `--auto`):
+1. Ejecuta `cole_setup.sh` (configuración educativa)
+2. Ejecuta `alta_colegio_basica.sh` (usuarios demo)
+3. Ejecuta `evidencias.sh` (documentación técnica)
+4. Muestra resumen de éxito
+
+**Uso típico**: Llamado automáticamente por `install.sh`. Puede ejecutarse manualmente para reconfigurar.
+
+### 8.3. scripts/cole_setup.sh - Configuración Educativa
 
 Configura el entorno específico del centro educativo:
 
@@ -362,34 +467,45 @@ bash scripts/cole_setup.sh
 
 **Configuraciones aplicadas**:
 
-- **Apps habilitadas**: theming, groupfolders, calendar, contacts, tasks, spreed, viewer, files_pdfviewer
-- **Theming**: Nombre, slogan, URL y color corporativo del centro
-- **Configuración regional**: Idioma español (ES), zona horaria
-- **Políticas de compartición**:
-  - Enlaces con expiración obligatoria (30 días)
-  - Contraseña obligatoria en enlaces
-  - Compartición solo entre miembros del grupo
-  - Carga pública deshabilitada
+- **Trusted Domains** (crítico para Uptime Kuma):
+  - `0: localhost`
+  - `1: app` (nombre del servicio Docker, acceso interno)
+- **Apps habilitadas**: groupfolders, impersonate, admin_audit, theming, viewer, files_pdfviewer, calendar, contacts
+- **Theming**: Nombre "IES Intranet Escolar", slogan, URL, color corporativo
 - **Grupos creados**:
-  - Perfiles: profesorado, alumnado, direccion, secretaria, tic, orientacion
+  - Perfiles: profesorado, alumnado, direccion, secretaria, tic, orientacion, clase
   - Cursos: 1ESO, 2ESO, 3ESO, 4ESO, 1BACH, 2BACH, FP1, FP2
-- **Carpetas de grupo (Group Folders)**:
-  - Claustro - Profesorado (solo profesorado, RW)
-  - Secretaría (solo secretaria, RW)
-  - Dirección (dirección RW, profesorado R)
-  - Comunicados Alumnado (profesorado RW, alumnado R)
-  - Curso [X] - Material (profesorado RW, curso específico R)
-- **Skeleton directory**: Estructura de carpetas para nuevos usuarios
+- **Carpetas de grupo (Group Folders)** con permisos diferenciados:
+  - **Claustro** → profesorado (write, 10GB)
+  - **Secretaria** → secretaria+direccion (write, 5GB)
+  - **Direccion** → direccion (write, 5GB)
+  - **Comunicados** → profesorado (write), alumnado (read, 2GB)
+  - **Curso_[X]** → profesorado (write), grupo curso (read, 15GB)
+- **Configuraciones adicionales**:
+  - Cuota por defecto: 5GB
+  - Retención de versiones: automática, 30 días
+  - App por defecto: files
+  - File locking habilitado
 
-### 8.3. alta_colegio_basica.sh - Usuarios de Demostración
+**Idempotencia**: Detecta recursos existentes y no los duplica.
 
-Crea los usuarios básicos para demostración:
+### 8.4. scripts/alta_colegio_basica.sh - Usuarios de Demostración
+
+Crea los usuarios de demostración del proyecto:
 
 ```bash
 bash scripts/alta_colegio_basica.sh
 ```
 
-**Usuarios creados**: `profe`, `alumno1`, `alumno2` (ver sección 7.1).
+**Usuarios creados**:
+
+| Usuario | Contraseña | Display Name | Grupos | Cuota |
+|---------|------------|--------------|--------|-------|
+| profe | Profe123! | Profesor Demo | profesorado, 1ESO | 5GB |
+| alumno1 | Alumno123! | Alumno Uno | alumnado, 1ESO, clase | 1GB |
+| alumno2 | Alumno123! | Alumno Dos | alumnado, 1ESO, clase | 1GB |
+
+**Idempotencia**: Si el usuario ya existe, solo actualiza grupos y cuota.
 
 ### 8.4. alta_usuarios.sh - Alta de Usuarios Adicionales
 

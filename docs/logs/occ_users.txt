@@ -1,0 +1,4 @@
+  - admin: admin
+  - alumno1: Alumno 1 (1ESO)
+  - alumno2: Alumno 2 (1ESO)
+  - profe: Profesor/a Referente
