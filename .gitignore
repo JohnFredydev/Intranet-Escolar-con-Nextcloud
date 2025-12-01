@@ -1,0 +1,27 @@
+# Variables de entorno con datos sensibles
+.env
+
+# Datos persistentes de Docker
+nextcloud/
+db/
+
+# Copias de seguridad
+backups/
+
+# Logs
+*.log
+logs/
+
+# Archivos temporales
+*.tmp
+*.swp
+*~
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.iml
