@@ -1,0 +1,163 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+# ============================================
+# Instalador Remoto - Intranet Escolar Nextcloud
+# Proyecto Final ASIR
+# ============================================
+
+# Colores para output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+CYAN='\033[0;36m'
+NC='\033[0m'
+
+log_info() { echo -e "${BLUE}[INFO]${NC} $*"; }
+log_success() { echo -e "${GREEN}[OK]${NC} $*"; }
+log_warning() { echo -e "${YELLOW}[AVISO]${NC} $*"; }
+log_error() { echo -e "${RED}[ERROR]${NC} $*"; }
+log_step() { echo -e "${CYAN}[PASO]${NC} $*"; }
+
+echo ""
+echo "================================================================"
+echo "                                                                "
+echo "   Instalador Remoto - Intranet Escolar con Nextcloud          "
+echo "   Proyecto Final ASIR                                         "
+echo "                                                                "
+echo "================================================================"
+echo ""
+
+# ============================================
+# Verificar requisitos del sistema
+# ============================================
+log_step "1/6: Verificando requisitos del sistema..."
+
+MISSING_DEPS=()
+
+if ! command -v docker &>/dev/null; then
+  MISSING_DEPS+=("docker")
+fi
+
+if ! docker compose version &>/dev/null; then
+  MISSING_DEPS+=("docker-compose-plugin")
+fi
+
+if ! command -v git &>/dev/null; then
+  MISSING_DEPS+=("git")
+fi
+
+if ! command -v curl &>/dev/null; then
+  MISSING_DEPS+=("curl")
+fi
+
+if [ ${#MISSING_DEPS[@]} -gt 0 ]; then
+  log_error "Faltan dependencias necesarias:"
+  for dep in "${MISSING_DEPS[@]}"; do
+    echo "  - $dep"
+  done
+  echo ""
+  log_error "Por favor, instala las dependencias y vuelve a ejecutar este script."
+  log_info ""
+  log_info "En Ubuntu/Debian:"
+  log_info "  sudo apt update && sudo apt install -y docker.io docker-compose-plugin git curl"
+  log_info "  sudo usermod -aG docker \$USER"
+  log_info "  newgrp docker"
+  echo ""
+  exit 1
+fi
+
+log_success "Todas las dependencias están instaladas"
+
+# ============================================
+# Configurar directorio de instalación
+# ============================================
+log_step "2/6: Configurando directorio de instalación..."
+
+INSTALL_DIR="${INSTALL_DIR:-$HOME/Intranet-Escolar-con-Nextcloud}"
+REPO_URL="https://github.com/JohnFredydev/Intranet-Escolar-con-Nextcloud.git"
+
+log_info "Directorio de instalación: $INSTALL_DIR"
+log_info "Repositorio: $REPO_URL"
+
+# ============================================
+# Clonar o actualizar repositorio
+# ============================================
+log_step "3/6: Obteniendo código fuente..."
+
+if [ -d "$INSTALL_DIR/.git" ]; then
+  log_warning "El directorio ya existe. Actualizando..."
+  cd "$INSTALL_DIR"
+  git pull --ff-only || {
+    log_error "No se pudo actualizar el repositorio."
+    log_error "Puede haber cambios locales que impiden la actualización."
+    log_info "Puedes intentar: cd $INSTALL_DIR && git status"
+    exit 1
+  }
+  log_success "Repositorio actualizado"
+elif [ -d "$INSTALL_DIR" ]; then
+  log_error "El directorio $INSTALL_DIR existe pero no es un repositorio git."
+  log_error "Por favor, elimínalo o elige otro directorio con: export INSTALL_DIR=/ruta/deseada"
+  exit 1
+else
+  log_info "Clonando repositorio..."
+  git clone "$REPO_URL" "$INSTALL_DIR" || {
+    log_error "No se pudo clonar el repositorio."
+    exit 1
+  }
+  cd "$INSTALL_DIR"
+  log_success "Repositorio clonado"
+fi
+
+# ============================================
+# Dar permisos de ejecución a scripts
+# ============================================
+log_step "4/6: Configurando permisos de scripts..."
+
+if [ -d "scripts" ]; then
+  chmod +x scripts/*.sh 2>/dev/null || true
+  log_success "Permisos de ejecución configurados"
+else
+  log_warning "No se encontró el directorio scripts/"
+fi
+
+# ============================================
+# Ejecutar script de inicialización
+# ============================================
+log_step "5/6: Ejecutando inicialización del proyecto..."
+echo ""
+
+if [ -f "scripts/init.sh" ]; then
+  bash scripts/init.sh
+else
+  log_error "No se encontró scripts/init.sh"
+  exit 1
+fi
+
+# ============================================
+# Resumen final
+# ============================================
+log_step "6/6: Instalación completada"
+echo ""
+echo "================================================================"
+echo "                                                                "
+echo "   Instalación completada exitosamente                         "
+echo "                                                                "
+echo "================================================================"
+echo ""
+log_success "El proyecto está instalado en: $INSTALL_DIR"
+echo ""
+log_info "Servicios disponibles:"
+echo "  - Nextcloud:    http://localhost:8080"
+echo "  - Uptime Kuma:  http://localhost:3001"
+echo ""
+log_info "Para gestionar el proyecto:"
+echo "  cd $INSTALL_DIR"
+echo "  docker compose ps                    # Ver estado"
+echo "  docker compose logs -f               # Ver logs"
+echo "  docker compose down                  # Detener servicios"
+echo "  bash scripts/backup.sh               # Crear backup"
+echo ""
+log_success "Disfruta de tu intranet escolar con Nextcloud"
+echo ""
