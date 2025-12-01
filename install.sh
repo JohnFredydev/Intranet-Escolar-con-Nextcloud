@@ -539,8 +539,8 @@ show_summary() {
   log_info "Credenciales por defecto:"
   echo ""
   echo "  ${ICON_BULLET} Admin:    ${YELLOW}admin${NC} / ${DIM}(ver NEXTCLOUD_ADMIN_PASSWORD en .env)${NC}"
-  echo "  ${ICON_BULLET} Profesor: ${YELLOW}profe${NC} / Profe123!"
-  echo "  ${ICON_BULLET} Alumno:   ${YELLOW}alumno1${NC} / Alumno123!"
+  echo "  ${ICON_BULLET} Profesor: ${YELLOW}profe${NC} / Profesor2025!Demo"
+  echo "  ${ICON_BULLET} Alumno:   ${YELLOW}alumno1${NC} / Alumno2025!Uno"
   echo ""
   
   log_info "Comandos útiles:"

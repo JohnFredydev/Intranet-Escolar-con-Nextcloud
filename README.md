@@ -195,7 +195,7 @@ Una vez desplegado, accede a:
 | Usuario | Contraseña | Rol | Cuota |
 |---------|-----------|-----|-------|
 | admin | (ver .env) | Administrador | Sin límite |
-| profe | Profe123! | Profesor | 5 GB |
+| profe | Profesor2025!Demo | Profesor | 5 GB |
 | alumno1 | Alumno123! | Alumno | 1 GB |
 | alumno2 | Alumno123! | Alumno | 1 GB |
 
@@ -539,9 +539,9 @@ bash scripts/alta_colegio_basica.sh
 
 | Usuario | Contraseña | Display Name | Grupos | Cuota |
 |---------|------------|--------------|--------|-------|
-| profe | Profe123! | Profesor Demo | profesorado, 1ESO | 5GB |
-| alumno1 | Alumno123! | Alumno Uno | alumnado, 1ESO, clase | 1GB |
-| alumno2 | Alumno123! | Alumno Dos | alumnado, 1ESO, clase | 1GB |
+| profe | Profesor2025!Demo | Profesor Demo | profesorado, 1ESO | 5GB |
+| alumno1 | Alumno2025!Uno | Alumno Uno | alumnado, 1ESO, clase | 1GB |
+| alumno2 | Alumno2025!Dos | Alumno Dos | alumnado, 1ESO, clase | 1GB |
 
 **Idempotencia**: Si el usuario ya existe, solo actualiza grupos y cuota.
 

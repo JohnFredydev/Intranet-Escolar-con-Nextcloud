@@ -77,19 +77,19 @@ echo ""
 
 # PROFESOR
 log_info "Creando usuario: profe"
-create_user "profe" "Profe123!" "Profesor Demo" "profesorado" "1ESO"
+create_user "profe" "Profesor2025!Demo" "Profesor Demo" "profesorado" "1ESO"
 set_quota "profe" "5GB"
 echo ""
 
 # ALUMNO 1
 log_info "Creando usuario: alumno1"
-create_user "alumno1" "Alumno123!" "Alumno Uno" "alumnado" "1ESO" "clase"
+create_user "alumno1" "Alumno2025!Uno" "Alumno Uno" "alumnado" "1ESO" "clase"
 set_quota "alumno1" "1GB"
 echo ""
 
 # ALUMNO 2
 log_info "Creando usuario: alumno2"
-create_user "alumno2" "Alumno123!" "Alumno Dos" "alumnado" "1ESO" "clase"
+create_user "alumno2" "Alumno2025!Dos" "Alumno Dos" "alumnado" "1ESO" "clase"
 set_quota "alumno2" "1GB"
 echo ""
 
@@ -107,14 +107,14 @@ echo "  admin / (ver .env: NEXTCLOUD_ADMIN_PASSWORD)"
 echo ""
 
 echo -e "${YELLOW}PROFESOR:${NC}"
-echo "  profe / Profe123!"
+echo "  profe / Profesor2025!Demo"
 echo "  Grupos: profesorado, 1ESO"
 echo "  Cuota: 5 GB"
 echo ""
 
 echo -e "${YELLOW}ALUMNOS:${NC}"
-echo "  alumno1 / Alumno123!"
-echo "  alumno2 / Alumno123!"
+echo "  alumno1 / Alumno2025!Uno"
+echo "  alumno2 / Alumno2025!Dos"
 echo "  Grupos: alumnado, 1ESO, clase"
 echo "  Cuota: 1 GB cada uno"
 echo ""

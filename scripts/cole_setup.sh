@@ -158,15 +158,15 @@ else
     local id=$(get_folder_id "$nombre")
     
     if [ -n "$id" ]; then
-      log_info "Carpeta '$nombre' ya existe (ID: $id)"
+      log_info "Carpeta '$nombre' ya existe (ID: $id)" >&2
       echo "$id"
     else
       id=$($OCC groupfolders:create "$nombre" 2>/dev/null | grep -oP '\d+' || echo "")
       if [ -n "$id" ]; then
-        log_success "Carpeta '$nombre' creada (ID: $id)"
+        log_success "Carpeta '$nombre' creada (ID: $id)" >&2
         echo "$id"
       else
-        log_warning "No se pudo crear carpeta '$nombre'"
+        log_warning "No se pudo crear carpeta '$nombre'" >&2
         echo ""
       fi
     fi
