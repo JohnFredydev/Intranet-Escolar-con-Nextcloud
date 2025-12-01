@@ -22,6 +22,30 @@ log_error() { echo -e "${RED}[✗]${NC} $*"; }
 OCC="docker compose exec -T -u www-data app php occ"
 
 # ============================================
+# 0. ESPERAR A QUE NEXTCLOUD ESTÉ COMPLETAMENTE LISTO
+# ============================================
+log_info "Verificando que Nextcloud esté completamente inicializado..."
+MAX_WAIT=60
+elapsed=0
+while [ $elapsed -lt $MAX_WAIT ]; do
+  if $OCC status &>/dev/null; then
+    if $OCC config:system:get version &>/dev/null; then
+      log_success "Nextcloud está listo para configuración"
+      break
+    fi
+  fi
+  echo -n "."
+  sleep 2
+  elapsed=$((elapsed + 2))
+done
+
+if [ $elapsed -ge $MAX_WAIT ]; then
+  log_warning "Tiempo de espera agotado, intentando continuar de todos modos..."
+fi
+
+echo ""
+
+# ============================================
 # 1. CONFIGURAR TRUSTED DOMAINS (CRÍTICO PARA UPTIME KUMA)
 # ============================================
 log_info "Configurando trusted domains..."
@@ -56,12 +80,23 @@ apps=(
 )
 
 for app in "${apps[@]}"; do
-  if $OCC app:install "$app" 2>/dev/null; then
-    log_success "$app instalado"
-  elif $OCC app:enable "$app" 2>/dev/null; then
-    log_success "$app habilitado"
+  # Verificar si ya está habilitada
+  if $OCC app:list --enabled 2>/dev/null | grep -q "  - $app:"; then
+    log_info "$app ya está habilitado"
   else
-    log_warning "$app no disponible o ya habilitado"
+    # Intentar instalar
+    if $OCC app:install "$app" 2>&1 | grep -q "installed"; then
+      log_success "$app instalado"
+    elif $OCC app:enable "$app" 2>&1 | grep -q "enabled"; then
+      log_success "$app habilitado"
+    else
+      # Puede que ya esté instalada pero deshabilitada
+      if $OCC app:enable "$app" 2>/dev/null; then
+        log_success "$app habilitado"
+      else
+        log_warning "$app no disponible en el App Store"
+      fi
+    fi
   fi
 done
 

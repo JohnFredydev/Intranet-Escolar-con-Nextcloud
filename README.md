@@ -94,9 +94,19 @@ newgrp docker
 
 ## 3. Despliegue Rápido
 
-### Instalación Automática (Un Solo Comando)
+### Opción 1: Instalación Remota (Más Rápido)
 
-Clona el repositorio y ejecuta el instalador:
+Descarga y ejecuta el instalador directamente desde GitHub:
+
+```bash
+bash <(curl -fsSL "https://raw.githubusercontent.com/JohnFredydev/Intranet-Escolar-con-Nextcloud/main/install.sh")
+```
+
+Este comando descargará automáticamente el repositorio completo y ejecutará la instalación.
+
+### Opción 2: Instalación Clásica
+
+Clona manualmente el repositorio y ejecuta el instalador:
 
 ```bash
 git clone https://github.com/JohnFredydev/Intranet-Escolar-con-Nextcloud.git

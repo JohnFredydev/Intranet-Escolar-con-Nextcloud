@@ -35,7 +35,8 @@ create_user() {
   if $OCC user:info "$username" &>/dev/null; then
     log_info "Usuario '$username' ya existe"
   else
-    if echo "$password" | $OCC user:add "$username" --password-from-env --display-name="$displayname" 2>/dev/null; then
+    # Usar OC_PASS para pasar contraseña por variable de entorno
+    if OC_PASS="$password" $OCC user:add "$username" --password-from-env --display-name="$displayname" 2>/dev/null; then
       log_success "Usuario '$username' creado"
     else
       log_error "Error al crear usuario '$username'"

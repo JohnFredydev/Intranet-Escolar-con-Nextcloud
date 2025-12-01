@@ -29,6 +29,53 @@ echo -e "${BOLD}${CYAN}╚══════════════════
 echo ""
 
 # ============================================
+# 0. DETECTAR SI SE EJECUTA REMOTAMENTE
+# ============================================
+REMOTE_INSTALL=false
+if [[ ! -f "docker-compose.yml" ]]; then
+  REMOTE_INSTALL=true
+  log_info "Instalación remota detectada - clonando repositorio..."
+  echo ""
+  
+  REPO_URL="https://github.com/JohnFredydev/Intranet-Escolar-con-Nextcloud.git"
+  INSTALL_DIR="${INSTALL_DIR:-$HOME/Intranet-Escolar-con-Nextcloud}"
+  
+  # Crear directorio si no existe
+  if [[ -d "$INSTALL_DIR" ]]; then
+    log_warning "El directorio $INSTALL_DIR ya existe"
+    read -p "$(echo -e "${YELLOW}¿Deseas eliminarlo y clonar de nuevo? [s/N]:${NC} ")" -n 1 -r
+    echo ""
+    if [[ $REPLY =~ ^[SsYy]$ ]]; then
+      rm -rf "$INSTALL_DIR"
+      log_info "Directorio eliminado"
+    else
+      log_info "Usando directorio existente"
+      cd "$INSTALL_DIR"
+      if [[ ! -f "docker-compose.yml" ]]; then
+        log_error "Directorio no contiene el proyecto válido"
+        exit 1
+      fi
+      REMOTE_INSTALL=false
+    fi
+  fi
+  
+  if [[ "$REMOTE_INSTALL" == "true" ]]; then
+    log_info "Clonando desde: $REPO_URL"
+    log_info "Destino: $INSTALL_DIR"
+    echo ""
+    
+    if git clone "$REPO_URL" "$INSTALL_DIR"; then
+      log_success "Repositorio clonado correctamente"
+      cd "$INSTALL_DIR"
+    else
+      log_error "Error al clonar el repositorio"
+      exit 1
+    fi
+    echo ""
+  fi
+fi
+
+# ============================================
 # 1. VERIFICAR REQUISITOS
 # ============================================
 log_step "1. Verificando requisitos del sistema"
@@ -69,12 +116,13 @@ log_step "2. Verificando estructura del proyecto"
 echo ""
 
 if [[ ! -f "docker-compose.yml" ]]; then
-  log_error "Este script debe ejecutarse desde el directorio raíz del proyecto"
-  log_info "Estructura esperada: docker-compose.yml, scripts/, .env.example"
+  log_error "Error: No se encuentra docker-compose.yml"
+  log_info "Directorio actual: $(pwd)"
   exit 1
 fi
 
 log_success "Estructura correcta"
+log_info "Directorio de trabajo: $(pwd)"
 echo ""
 
 # ============================================
