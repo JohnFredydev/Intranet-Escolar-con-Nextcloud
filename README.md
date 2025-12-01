@@ -4,6 +4,8 @@
 
 Despliegue completamente automatizado de una intranet escolar basada en Nextcloud, utilizando Docker Compose y MariaDB, orientada a centros educativos (ESO, Bachillerato, FP).
 
+
+*Autor: John Fredy Cabezas Callejas*
 ---
 
 ## Índice
