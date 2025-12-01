@@ -58,7 +58,7 @@ Clic en **"Add New Monitor"** y configura:
 | Method | GET |
 | Body | (vacío) |
 
-**⚠️ IMPORTANTE**: Usa `http://app/status.php` (nombre del servicio Docker), NO `http://localhost:8080/status.php`.
+**IMPORTANTE**: Usa `http://app/status.php` (nombre del servicio Docker), NO `http://localhost:8080/status.php`.
 
 ### Paso 3: Guardar
 

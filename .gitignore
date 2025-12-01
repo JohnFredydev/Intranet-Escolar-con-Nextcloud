@@ -1,0 +1,40 @@
+# ============================================
+# .gitignore - Intranet Escolar con Nextcloud
+# ============================================
+
+# Variables de entorno (NUNCA subir credenciales)
+.env
+.env.local
+.env.*.local
+
+# Backups
+backups/
+*.tar.gz
+*.sql
+*.sql.gz
+
+# Logs temporales
+/tmp/
+*.log
+/docs/logs/*.txt
+/docs/logs/*.yml
+
+# Docker
+.docker/
+docker-compose.override.yml
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Editores
+.vscode/
+.idea/
+*.sublime-*
+
+# Temporal
+temp/
+tmp/

@@ -1,5 +1,0 @@
-NAME                                    IMAGE                    COMMAND                  SERVICE   CREATED          STATUS                    PORTS
-intranet-escolar-con-nextcloud-app-1    nextcloud:29-apache      "/entrypoint.sh apac…"   app       45 seconds ago   Up 38 seconds             0.0.0.0:8080->80/tcp, [::]:8080->80/tcp
-intranet-escolar-con-nextcloud-cron-1   nextcloud:29-apache      "/cron.sh"               cron      45 seconds ago   Up 37 seconds             80/tcp
-intranet-escolar-con-nextcloud-db-1     mariadb:11               "docker-entrypoint.s…"   db        45 seconds ago   Up 44 seconds (healthy)   3306/tcp
-intranet-escolar-con-nextcloud-kuma-1   louislam/uptime-kuma:1   "/usr/bin/dumb-init …"   kuma      45 seconds ago   Up 44 seconds (healthy)   0.0.0.0:3001->3001/tcp, [::]:3001->3001/tcp

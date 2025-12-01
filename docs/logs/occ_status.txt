@@ -1,8 +1,0 @@
-  - installed: true
-  - version: 29.0.16.1
-  - versionstring: 29.0.16
-  - edition: 
-  - maintenance: false
-  - needsDbUpgrade: false
-  - productname: Nextcloud
-  - extendedSupport: false

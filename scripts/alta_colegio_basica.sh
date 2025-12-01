@@ -36,7 +36,7 @@ create_user() {
     log_info "Usuario '$username' ya existe"
   else
     # Usar OC_PASS para pasar contraseña por variable de entorno
-    if OC_PASS="$password" $OCC user:add "$username" --password-from-env --display-name="$displayname" 2>/dev/null; then
+    if docker compose exec -T -e OC_PASS="$password" -u www-data app php occ user:add "$username" --password-from-env --display-name="$displayname" 2>/dev/null; then
       log_success "Usuario '$username' creado"
     else
       log_error "Error al crear usuario '$username'"

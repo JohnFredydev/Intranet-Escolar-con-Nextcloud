@@ -99,10 +99,33 @@ newgrp docker
 Descarga y ejecuta el instalador directamente desde GitHub:
 
 ```bash
+# Instalación interactiva (recomendado)
 bash <(curl -fsSL "https://raw.githubusercontent.com/JohnFredydev/Intranet-Escolar-con-Nextcloud/main/install.sh")
+
+# Instalación automática sin prompts (ideal para scripts)
+bash <(curl -fsSL "https://raw.githubusercontent.com/JohnFredydev/Intranet-Escolar-con-Nextcloud/main/install.sh") --force --quiet
+
+# Ver qué haría sin ejecutar (dry-run)
+bash <(curl -fsSL "https://raw.githubusercontent.com/JohnFredydev/Intranet-Escolar-con-Nextcloud/main/install.sh") --dry-run
+
+# Personalizar directorio de instalación
+bash <(curl -fsSL "https://raw.githubusercontent.com/JohnFredydev/Intranet-Escolar-con-Nextcloud/main/install.sh") --dir=$HOME/mi-intranet
 ```
 
-Este comando descargará automáticamente el repositorio completo y ejecutará la instalación.
+**Opciones disponibles:**
+- `-h, --help` - Mostrar ayuda
+- `-q, --quiet` - Modo silencioso
+- `-f, --force` - Sin confirmaciones (automatizado)
+- `--dry-run` - Simular sin ejecutar
+- `--debug` - Información detallada
+- `--no-color` - Sin colores
+- `--dir=PATH` - Directorio personalizado
+
+Este método:
+- No requiere clonar el repositorio manualmente
+- Funciona en cualquier directorio
+- Clona automáticamente el proyecto
+- Soporta todas las opciones CLI
 
 ### Opción 2: Instalación Clásica
 
@@ -111,26 +134,31 @@ Clona manualmente el repositorio y ejecuta el instalador:
 ```bash
 git clone https://github.com/JohnFredydev/Intranet-Escolar-con-Nextcloud.git
 cd Intranet-Escolar-con-Nextcloud
-bash install.sh
+./install.sh
+
+# O con opciones
+./install.sh --force      # Sin prompts
+./install.sh --dry-run    # Solo simular
+./install.sh --help       # Ver ayuda completa
 ```
 
 El instalador ejecutará **automáticamente**:
 
-1. ✓ Verificación de requisitos (Docker, Docker Compose, Git, Curl)
-2. ✓ Creación de `.env` desde plantilla (si no existe)
-3. ✓ Levantado de servicios Docker (Nextcloud, MariaDB, Uptime Kuma)
-4. ✓ Espera hasta que la base de datos esté healthy
-5. ✓ Configuración del entorno educativo:
+1. Verificación de requisitos (Docker, Docker Compose, Git, Curl)
+2. Creación de `.env` desde plantilla (si no existe)
+3. Levantado de servicios Docker (Nextcloud, MariaDB, Uptime Kuma)
+4. Espera hasta que la base de datos esté healthy
+5. Configuración del entorno educativo:
    - Trusted domains (`localhost`, `app`)
    - Instalación de apps (groupfolders, impersonate, etc.)
    - Creación de grupos (profesorado, alumnado, cursos...)
    - Creación de carpetas grupales con permisos
    - Configuración de theming
-6. ✓ Creación de usuarios de demostración:
+6. Creación de usuarios de demostración:
    - `admin` (administrador)
    - `profe` (profesor - 5GB)
    - `alumno1`, `alumno2` (alumnos - 1GB)
-7. ✓ Generación de evidencias técnicas
+7. Generación de evidencias técnicas
 
 **Tiempo estimado**: 3-5 minutos en la primera ejecución.
 
@@ -392,7 +420,7 @@ Credenciales creadas automáticamente para demostración:
 **Configuración recomendada de monitor**:
 - **Tipo**: HTTP(s)
 - **Friendly Name**: Nextcloud
-- **URL**: `http://app/status.php` (⚠️ **importante**: usar nombre de servicio Docker, NO localhost:8080)
+- **URL**: `http://app/status.php` (**importante**: usar nombre de servicio Docker, NO localhost:8080)
 - **Heartbeat Interval**: 20 segundos
 - **Retries**: 2
 - **Request Timeout**: 8 segundos
