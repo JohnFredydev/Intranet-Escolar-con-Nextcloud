@@ -144,7 +144,9 @@ check_docker_images() {
       if ask_yes_no "¿Deseas importar imágenes desde el paquete offline?" "y"; then
         echo ""
         log_info "Importando imágenes desde $offline_dir..."
-        bash scripts/import_images.sh "$offline_dir" || true
+        # Usar ruta absoluta para evitar problemas de contexto
+        local absolute_offline_dir="$(cd "$offline_dir" && pwd)"
+        bash scripts/import_images.sh "$absolute_offline_dir" || true
         echo ""
         return 0
       fi
@@ -281,16 +283,16 @@ deployment_menu() {
   log_title "║           OPCIONES DE DESPLIEGUE                           ║"
   log_title "╚════════════════════════════════════════════════════════════╝"
   echo ""
-  echo "  ${BOLD}1.${NC} Despliegue completo automático (recomendado)"
+  echo -e "  ${BOLD}1.${NC} Despliegue completo automático (recomendado)"
   echo "     → Levanta servicios y configura entorno educativo"
   echo ""
-  echo "  ${BOLD}2.${NC} Solo levantar servicios Docker"
+  echo -e "  ${BOLD}2.${NC} Solo levantar servicios Docker"
   echo "     → Sin configuración educativa"
   echo ""
-  echo "  ${BOLD}3.${NC} Configuración manual paso a paso"
+  echo -e "  ${BOLD}3.${NC} Configuración manual paso a paso"
   echo "     → Control total del proceso"
   echo ""
-  echo "  ${BOLD}4.${NC} Salir sin desplegar"
+  echo -e "  ${BOLD}4.${NC} Salir sin desplegar"
   echo ""
   
   read -p "$(echo -e "${YELLOW}[?]${NC} Selecciona una opción [1-4]: ")" -n 1 -r option
