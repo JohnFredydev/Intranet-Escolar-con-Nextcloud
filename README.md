@@ -407,8 +407,8 @@ Credenciales creadas automáticamente para demostración:
 |---------|------------|-----|----------|-------|
 | `admin` | `Admin#2025!Cole` | Administrador | admin | Ilimitada |
 | `profe` | `Profe#2025!Abc` | Profesor | profesorado, 1ESO | 5 GB |
-| `alumno1` | `Alu1#2025!Abc` | Alumno | alumnado, 1ESO, clase | 1 GB |
-| `alumno2` | `Alu2#2025!Abc` | Alumno | alumnado, 1ESO, clase | 1 GB |
+| `alumno1` | `Alumno2025!Uno` | Alumno | alumnado, 1ESO, clase | 1 GB |
+| `alumno2` | `Alumno2025!Dos` | Alumno | alumnado, 1ESO, clase | 1 GB |
 
 **Acceso**: http://localhost:8080
 
